@@ -1,0 +1,255 @@
+# This is the OpenAPI specification for your service. It is used to generate the client code.
+# To generate the server code, use the Gradle task `openApiGenerate`. The 
+# generated code will be placed in `build/generate-resources/main`.
+#
+# We will evaluate you based on how well you design your API.
+# 1. How well it follows REST principles.
+# 2. How easy it is to understand and use.
+#
+# References
+# 1. https://swagger.io/specification/
+# openapi: "3.0.0"
+# info:
+#   version: 1.0.0
+#   title: User Service
+#   license:
+#     name: MIT
+# servers:
+#   - url: http://localhost
+# paths:
+#   /hello:
+#     get:
+#       summary: This is just a test endpoint to get you started. Please delete this endpoint.
+#       operationId: hello
+#       parameters:
+#         - name: id
+#           in: query
+#           required: true
+#           schema:
+#             type: integer
+#       responses:
+#         '200':
+#           description: Test return
+#           content:
+#             application/json:    
+#               schema:
+#                 $ref: "#/components/schemas/HelloResponse"
+#         '404':
+#           description: Not found
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: "#/components/schemas/ErrorResponse"
+# components:
+#   schemas:
+#     HelloResponse:
+#       type: object
+#       required:
+#         - message
+#       properties:
+#         message:
+#           type: string
+#     ErrorResponse:
+#       type: object
+#       required:
+#         - message
+#       properties:
+#         message:
+#           type: string
+
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: User Service
+  license:
+    name: MIT
+servers:
+  - url: http://localhost
+paths:
+  /hello:
+    get:
+      summary: This is just a test endpoint to get you started. Please delete this endpoint.
+      operationId: hello
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Test return
+          content:
+            application/json:    
+              schema:
+                $ref: "#/components/schemas/HelloResponse"
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /login:
+    post: 
+      summary: Login user authentication phone number and password
+      requestBody: 
+        description: authentication
+        content: 
+          application/json: 
+            schema: 
+              $ref: "#/components/schemas/LoginRequest"      
+      responses:
+        '200' :
+          description: success login and get token 
+          content:
+            application/json:    
+              schema:
+                $ref : "#/components/schemas/LoginResponse"
+        '400' :
+          description: "credential does not match phone number or password"
+  
+  /register:
+    post:
+      summary: Registration new user 
+      requestBody:
+        description: create new user 
+        content:
+          application/json:
+            schema:
+              $ref : "#/components/schemas/RegisterRequest"
+      responses:
+        '200':
+          description: success login and get token 
+          content:
+            application/json:    
+              schema:
+                $ref : "#/components/schemas/RegisterResponse"
+        '400':
+          description: "description: Bad request. full name, phone number and password is required"
+  /profile:
+    get:
+      summary: Profile user
+      responses:
+        '200': 
+          description: Profile user
+          content:
+            application/json:
+              schema:
+                $ref : "#/components/schemas/ProfileResponse"
+        '401':
+          description: "Unauthorized, token parse with bearer"
+  /user/update:
+    put:
+      summary: Update User 
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref : "#/components/schemas/UpdateRequest"
+      responses:
+        '200':
+          description: success update user
+          content:
+            application/json:
+              schema:
+                $ref : "#/components/schemas/UpdateResponse"
+        '401':
+          description: "Unauthorized, token parse with bearer"
+        '400':
+          description: "description: Bad request. full name and  phone number is required"
+        '409':
+          description: "conflict : phone number already exist"
+components:
+  schemas:
+    HelloResponse:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+    ErrorResponse:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+    LoginRequest:
+      type: object
+      required: 
+        - phoneNumber
+        - password
+      properties: 
+        phoneNumber:
+          type: string
+        password :
+          type: string
+      example: 
+        phoneNumber : 6287878566908
+        passwod: Test123*
+    LoginResponse:
+        type: object
+        properties:
+          accessToken:
+            type: string
+        example: 
+          - accessToken : eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTE2NTE0OTMsImp0aSI6Ijc3In0.Th9BHMs-sPJ3mvW-hO4_ZslAmH_u4I9gPgo2vJUinJ3O0YB4ODvLBSRLn1JCZCTiaXuwCOpU482Y4Bb3pYvJNk56Cogz2gV7CDXKNVJzjJDDBUSOgbyMqtLWvf35ZMUEQxfIcHHe-8WOj6eEpwBa5KaQmKwlO91sHtsPjA1IGO-KWNKFL0CFDKmtlPXjb5JWTuVD692l1L_LKsBGqaTGuyCiDBSmANKbYZ9WWJepEl7SsUXGAsyoqkgOaBuO04d1WLUhR93VruMnF9lcwl7dw19rie8F57z094EBjeu0bIfe6uiwsQGLoa2gNVTVQNskrqMx-mzIKbxruWa6MVRr_g
+    RegisterRequest:
+      type: object
+      required: 
+        - fullName
+        - phoneNumber
+        - password
+      properties:
+        fullName:
+          type: string
+        phoneNumber:
+          type: string
+        password :
+          type: string
+      example: 
+        fullName : joeDoe
+        phoneNumber : 6287878566908
+        password : Test123*
+    RegisterResponse: 
+      type : object 
+      properties:
+        userId:
+          type: string
+      example: 
+        userId : "5"
+    ProfileResponse: 
+      type: object
+      properties:
+        fullName : 
+          type : string
+        phoneNumber: 
+          type : string
+        userId : 
+          type : string
+      example: 
+        data: 
+          fullName: umar009
+          phoneNumber: 6287878566906
+          userId: "77"
+    UpdateRequest:
+      type: object
+      required: 
+        - phoneNumber
+        - fullName
+      properties:
+        phoneNumber:
+          type: string
+        fullName:
+          type: string
+      example: 
+        phoneNumber : "6287878566906"
+        fullName : joeDoe
+    UpdateResponse:
+      type: object
+      properties:
+        data:
+          type : string
+      example: 
+        data : "success updated with id : 7"
